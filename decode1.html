@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <title>Code Snippet Game</title>
+  <link rel="shortcut icon" href="/code-solid.svg" type="image/x-icon">
+  <style>
+    .snippet {
+      margin: 20px;
+      padding: 10px;
+      border: 1px solid #ccc;
+    }
+
+    .score-container {
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Code Snippet Game</h1>
+
+    <div class="snippet">
+      <pre>
+        <code>
+          #include &lt;stdio.h&gt;
+
+          int main() {
+            printf("Hello, World!\n");
+            return 0;
+          }
+        </code>
+      </pre>
+    </div>
+
+    <h3>Which line has an error?</h3>
+    <form id="quiz-form">
+      <div class="form-group">
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="option" id="option1" value="option1">
+          <label class="form-check-label" for="option1"></label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="option" id="option2" value="option2">
+          <label class="form-check-label" for="option2"></label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="option" id="option3" value="option3">
+          <label class="form-check-label" for="option3"></label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="option" id="option4" value="option4">
+          <label class="form-check-label" for="option4"></label>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary">Next</button>
+      <button type="button" class="btn btn-danger" id="end-test">End Test</button>
+    </form>
+
+    <div class="score-container" style="display: none;">
+      <h3>Your Score</h3>
+      <p id="score"></p>
+    </div>
+
+    <div class="timer-container">
+      <h3>Time Remaining</h3>
+      <p id="timer"></p>
+    </div>
+  </div>
+
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    const questions = [
+      {
+        snippet: '<pre><code>#include &lt;stdio.h&gt;\n\nint main() {\n  printf("Hello, World!\\n");\n  return 0;\n}</code></pre>',
+        options: [
+          'Line 2',
+          'Line 3',
+          'Line 4',
+          'No error'
+        ],
+        correctAnswer: 'option4'
+      },
+      {
+        snippet: '<pre><code>int x = 10;\nfloat y = 3.14;\nint result = x + y;\nprintf("Result: %d\\n", result);        </code></pre>',
+        options: [
+          'Line 2',
+          'Line 3',
+          'Line 6',
+          'Line 5'
+        ],
+        correctAnswer: 'option2'
+      },
+      // Add more questions here...
+    ];
+
+    const quizForm = document.getElementById('quiz-form');
+    const scoreContainer = document.querySelector('.score-container');
+    const scoreElement = document.getElementById('score');
+    const timerElement = document.getElementById('timer');
+    const endTestButton = document.getElementById('end-test');
+    let score = 0;
+    let currentQuestionIndex = 0;
+    let timer;
+    let timeRemaining = 20 * 60;
+
+    function displayQuestion() {
+      const currentQuestion = questions[currentQuestionIndex];
+      const snippetContainer = document.querySelector('.snippet');
+      const snippetCode = snippetContainer.querySelector('code');
+      const options = quizForm.elements.option;
+
+      snippetCode.innerHTML = currentQuestion.snippet;
+
+      for (let i = 0; i < options.length; i++) {
+        const option = options[i];
+        option.checked = false;
+        option.disabled = false;
+        option.nextElementSibling.textContent = currentQuestion.options[i]; // Update option content
+      }
+
+      scoreContainer.style.display = 'none';
+
+      if (currentQuestionIndex === questions.length - 1) {
+        quizForm.querySelector('button[type="submit"]').textContent = 'Finish';
+      }
+    }
+
+    function checkAnswer(e) {
+      e.preventDefault();
+
+      const selectedOption = quizForm.elements.option.value;
+      const currentQuestion = questions[currentQuestionIndex];
+
+      if (selectedOption === currentQuestion.correctAnswer) {
+        score++;
+      }
+
+      for (let i = 0; i < quizForm.elements.option.length; i++) {
+        quizForm.elements.option[i].disabled = true;
+      }
+
+      if (currentQuestionIndex === questions.length - 1) {
+        endTest();
+      } else {
+        currentQuestionIndex++;
+        displayQuestion();
+      }
+    }
+
+    function endTest() {
+      clearInterval(timer);
+      showScore();
+    }
+
+    function showScore() {
+      scoreElement.textContent = `${score}/${questions.length}`;
+      scoreContainer.style.display = 'block';
+      quizForm.style.display = 'none';
+      endTestButton.style.display = 'none';
+    }
+
+    function updateTime() {
+      const minutes = Math.floor(timeRemaining / 60);
+      const seconds = timeRemaining % 60;
+      timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+      if (timeRemaining === 0) {
+        endTest();
+      } else {
+        timeRemaining--;
+      }
+    }
+
+    function startTimer() {
+      timer = setInterval(updateTime, 1000);
+    }
+
+    quizForm.addEventListener('submit', checkAnswer);
+    endTestButton.addEventListener('click', endTest);
+
+    displayQuestion();
+    startTimer();
+  </script>
+</body>
+</html>
+

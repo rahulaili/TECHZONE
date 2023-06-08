@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="shortcut icon" href="/code-solid.svg" type="image/x-icon">
+  <title>Code Snippet Game</title>
+  <style>
+    .snippet {
+      margin: 20px;
+      padding: 10px;
+      border: 1px solid #ccc;
+    }
+
+    .score-container {
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container my-4">
+    <h1 class="fw-bold text-center" style="color: #0e6b0e;">DECODE - ROUND 2</h1>
+    <div class="timer-container">
+        <h3>Time Remaining</h3>
+        <p id="timer"></p>
+      </div>
+
+    <div class="snippet">
+      <pre>
+        <code>
+          #include &lt;stdio.h&gt;
+
+          int main() {
+            printf("Hello, World!\n");
+            return 0;
+          }
+        </code>
+      </pre>
+    </div>
+
+    <h3 id="question-prompt">Which line has an error?</h3>
+    <form id="quiz-form">
+      <div class="form-group">
+        <div class="form-check form-control">
+          <input class="form-check-input" type="radio" name="option" id="option1" value="option1">
+          <label class="form-check-label" for="option1"></label>
+        </div>
+        <div class="form-check form-control my-3">
+          <input class="form-check-input" type="radio" name="option" id="option2" value="option2">
+          <label class="form-check-label" for="option2"></label>
+        </div>
+        <div class="form-check form-control my-3">
+          <input class="form-check-input" type="radio" name="option" id="option3" value="option3">
+          <label class="form-check-label" for="option3"></label>
+        </div>
+        <div class="form-check form-control my-3">
+          <input class="form-check-input" type="radio" name="option" id="option4" value="option4">
+          <label class="form-check-label" for="option4"></label>
+        </div>
+      </div>
+      <button type="submit" class="btn text-light fw-bold" style="background-color: #0e6b0e;">Next</button>
+      <button type="button" class="btn btn-primary mx-3" id="end-test">End Test</button>
+    </form>
+
+    <div class="score-container" style="display: none;">
+      <h3>Your Score</h3>
+      <p id="score"></p>
+    </div>
+
+    
+  </div>
+
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    const questions = [
+      //1
+      {
+        snippet: '<pre><code>class Super {\n  public int index = 1;\n}\nclass App extends Super {\n public App(int index) {\n index = index;\n}\n   public static void main(String args[]) {\n  App myApp = new App(10);\n  System.out.println(myApp.index);\n  }\n}</code></pre>',
+        question: 'Which of the following would the below Java coding snippet return as its output?',
+        options: [
+          '0',
+          '10',
+          '1',
+          'Compile timw error'
+        ],
+        correctAnswer: 'option3'
+      },
+      //2
+      {
+        snippet: '<pre><code>class TestApp {\n  String args[] = { "1", "2" };\n   public static void main(String args[]) {\n   if (args.length > 0)\n  System.out.println(args.length);\n  }\n}</code></pre>',
+        question: 'Which of the following is the result of the following Java code?',
+        options: [
+          'The program compiles but prints nothing.',
+          'The program fails to compile.',
+          'The program compiles and prints 2.',
+          'The program compiles and prints 0.'
+        ],
+        correctAnswer: 'option1'
+      },
+
+      //3
+      {
+        snippet: '<pre><code>print("abcdefcdghcd".split("cd", 2))</code></pre>',
+        question: 'What will be the output of the following Python code snippet?',
+        options: [
+          '[‘ab’, ‘ef’, ‘ghcd’]',
+          '[‘ab’, ‘efcdghcd’]',
+          '[‘abcdef’, ‘ghcd’]',
+          'none of the mentioned'
+        ],
+        correctAnswer: 'option1'
+      },
+
+
+      //4
+      {
+        snippet: '<pre><code>x = "abcd"\nfor i in x:\n  print(i)\n  x.upper()</code></pre>',
+        question: 'What will be the output of the following Python code?',
+        options: [
+          'a B C D',
+          'a b c d',
+          'A B C D',
+          'error'
+        ],
+        correctAnswer: 'option2'
+      },
+      //5
+      {
+        snippet: '<pre><code>my_tuple = (1, 2, 3, 4)\nmy_tuple.append( (5, 6, 7) )\nprint len(my_tuple)</code></pre>',
+        question: 'What will be the output of the following Python code?',
+        options: [
+          '1',
+          '2',
+          '5',
+          'error'
+        ],
+        correctAnswer: 'option4'
+      },
+      //6
+      {
+        snippet: '<pre><code>#include<stdio.h>\nint main()\n{\n   char ch;\n    int i;\n    scanf("%c", &i);\n    scanf("%d", &ch);\n   printf("%c %d", ch, i);\n   return 0;\n}</code></pre>',
+        question: 'Point out the error in the following C program.',
+        options: [
+          'Error: suspicious char to in conversion in scanf()',
+          'Error: we may not get input for second scanf() statement',
+          'No Error',
+          'None of the above'
+        ],
+        correctAnswer: 'option2'
+      },
+      //7
+      {
+        snippet: '<pre><code>#include<stdio.h>\nstruct emp\n{\n   char name[20];\n    int age;\n};\nint main()\n{\n   emp int xx;\n   int a;\n    printf("%d\n", &a);\n   return 0;\n}</code></pre>',
+        question: 'Point out the error in the following C program.',
+        options: [
+          'Error: in printf',
+          'Error: in emp int xx;',
+          'No Error',
+          'None of the above'
+        ],
+        correctAnswer: 'option2'
+      },
+      //8
+      {
+        snippet: '<pre><code>#include<stdio.h>\nint main()\n{\n   int a[5] = {5, 1, 15, 20, 25};\n    int i, j, m;\n    i = ++a[1];\n   j = a[1]++;\n   m = a[i++];\n   printf("%d, %d, %d", i, j, m);\n    return 0;\n}</code></pre>',
+        question: 'What will be the output of the program ?',
+        options: [
+          '2, 1, 15',
+          '1, 2, 5',
+          '3, 2, 15',
+          '2, 3, 20'
+        ],
+        correctAnswer: 'option3'
+      },
+      //9
+      {
+        snippet: '<pre><code>public class While /* Line 6 */\n{\n    public void loop()\n    {\n       int x= 0;\n       while ( 1 )/* Line 6 */\n       {\n           System.out.print("x plus one is " + (x + 1)); /* Line 8 */\n        }\n   }\n}</code></pre>',
+        question: 'Which statement is true?',
+        options: [
+          'There is a syntax error on line 1.',
+          'There are syntax errors on lines 1 and 6',
+          'There are syntax errors on lines 1, 6, and 8.',
+          'There is a syntax error on line 6.'
+        ],
+        correctAnswer: 'option4'
+      },
+      //10
+      {
+        snippet: '<pre><code>#include<iostream.h>\nint main()\n{    int x = 80;\n    int y& = x;\n     x++;\n    cout << x << " " << --y;\n    return 0;\n}</code></pre>',
+        question: 'Which of the following statement is correct about the C++ program given below?',
+        options: [
+          'The program will print the output 80 80.',
+          'The program will print the output 81 80.',
+          'The program will print the output 81 81.',
+          'It will result in a compile time error.'
+        ],
+        correctAnswer: 'option4'
+      },
+      // Add more questions here...
+    ];
+
+    const quizForm = document.getElementById('quiz-form');
+    const scoreContainer = document.querySelector('.score-container');
+    const scoreElement = document.getElementById('score');
+    const timerElement = document.getElementById('timer');
+    const endTestButton = document.getElementById('end-test');
+    const questionPrompt = document.getElementById('question-prompt');
+    let score = 0;
+    let currentQuestionIndex = 0;
+    let timer;
+    let timeRemaining = 20 * 60;
+
+    function displayQuestion() {
+      const currentQuestion = questions[currentQuestionIndex];
+      const snippetContainer = document.querySelector('.snippet');
+      const snippetCode = snippetContainer.querySelector('code');
+      const options = quizForm.elements.option;
+
+      snippetCode.innerHTML = currentQuestion.snippet;
+      questionPrompt.textContent = currentQuestion.question;
+
+      for (let i = 0; i < options.length; i++) {
+        const option = options[i];
+        option.checked = false;
+        option.disabled = false;
+        option.nextElementSibling.textContent = currentQuestion.options[i]; // Update option content
+      }
+
+      scoreContainer.style.display = 'none';
+
+      if (currentQuestionIndex === questions.length - 1) {
+        quizForm.querySelector('button[type="submit"]').textContent = 'Finish';
+      }
+    }
+
+    function checkAnswer(e) {
+      e.preventDefault();
+
+      const selectedOption = quizForm.elements.option.value;
+      const currentQuestion = questions[currentQuestionIndex];
+
+      if (selectedOption === currentQuestion.correctAnswer) {
+        score++;
+      }
+
+      for (let i = 0; i < quizForm.elements.option.length; i++) {
+        quizForm.elements.option[i].disabled = true;
+      }
+
+      if (currentQuestionIndex === questions.length - 1) {
+        endTest();
+      } else {
+        currentQuestionIndex++;
+        displayQuestion();
+      }
+    }
+
+    function endTest() {
+      clearInterval(timer);
+      showScore();
+    }
+
+    function showScore() {
+      scoreElement.textContent = `${score}/${questions.length}`;
+      scoreContainer.style.display = 'block';
+      quizForm.style.display = 'none';
+      endTestButton.style.display = 'none';
+    }
+
+    function updateTime() {
+      const minutes = Math.floor(timeRemaining / 60);
+      const seconds = timeRemaining % 60;
+      timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+      if (timeRemaining === 0) {
+        endTest();
+      } else {
+        timeRemaining--;
+      }
+    }
+
+    function startTimer() {
+      timer = setInterval(updateTime, 1000);
+    }
+
+    quizForm.addEventListener('submit', checkAnswer);
+    endTestButton.addEventListener('click', endTest);
+
+    displayQuestion();
+    startTimer();
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JUMBATRON</title>
+    <link rel="shortcut icon" href="/code-solid.svg" type="image/x-icon">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- Custom CSS -->
+    <style>
+        .jumbotron {
+            margin-top: 60px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="jumbotron">
+            <h1 class="display-4 text-center fw-bold" style="color:#0e6b0e;">JUMBATRON</h1>
+            <p class="lead my-3 text-center">Rearrange the letters to form the correct word!</p>
+            <p id="timer" class="mt-3">Time Remaining: 20:00</p>
+
+            <div id="word-container">
+                <h3 id="hint"></h3>
+                <h3 id="jumbled-word">Jumbled Word</h3>
+
+                <input type="text" id="user-input" class="form-control" placeholder="Enter the correct word">
+                <button id="check-btn" class="btn text-light fw-bold mt-3" style="background-color: #0e6b0e;">SUBMIT</button>
+                <button id="end-btn" class="btn btn-primary mt-3 mx-3">End Test</button>
+
+                <p id="result" class="mt-3"></p>
+                <h1 id="caption" class="mt-3"></h1>
+                <p id="score" class="mt-3"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and custom script -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Array of jumbled words
+            var hints = [
+                "Lowest layer in computer networks",
+                "Study of data",
+                "A common data storage format used in many web apps.",
+                "A member of a class",
+                "A block of information that moves from one computer to another. ",
+                "A version control system that tracks changes to code",
+                "The process of looking for and repairing coding errors",
+                "technology to accomplish a task with as little human interaction as possible",
+                "creation of an executable program",
+                "multiple processes where the output of one process is connected to the next process's input."
+            ]
+            var words = [
+                "physical layer",
+                "data science",
+                "json",
+                "object",
+                "packets",
+                "git",
+                "debugging",
+                "automation",
+                "compiler",
+                "pipeline"
+            ];
+
+            var currentWordIndex = 0;
+            var score = 0;
+            var totalQuestions = 10;
+
+            // Display initial jumbled word
+            displayWord();
+
+
+            // Function to display a jumbled word
+            function displayWord() {
+                var hintquestion = hints[currentWordIndex];
+                var currentWord = words[currentWordIndex];
+                var jumbledWord = jumbleWord(currentWord);
+                document.getElementById("hint").innerHTML = "HINT : " + hintquestion;
+                while (jumbledWord === currentWord) {
+                    jumbledWord = jumbleWord(currentWord);
+                }
+
+                document.getElementById("jumbled-word").innerHTML = "JUMBLED WORD : "+jumbledWord;
+            }
+
+            // Function to jumble a word
+            function jumbleWord(word) {
+                var shuffledWord = word.split('').sort(function () { return 0.5 - Math.random(); }).join('');
+                return shuffledWord;
+            }
+
+            // Function to check if the game is over
+            function isGameOver() {
+                return currentWordIndex >= totalQuestions;
+            }
+
+            // Function to end the game and display the final score
+            function endGame() {
+                document.getElementById("word-container").style.display = "block";
+                document.getElementById("score").innerHTML = "Your Score: " + score + " out of " + totalQuestions;
+                document.getElementById("score").style.display = "block";
+
+                document.getElementById("caption").innerHTML = "Congratulations";
+                document.getElementById("caption").style.display = "block";
+
+
+            }
+
+            // Event listener for the check button
+            document.getElementById("check-btn").addEventListener("click", function () {
+                var userInput = document.getElementById("user-input").value.toLowerCase();
+                var currentWord = words[currentWordIndex];
+
+                if (userInput === currentWord) {
+                    score++;
+                    document.getElementById("result").innerHTML = "Correct!";
+                } else {
+                    document.getElementById("result").innerHTML = "Incorrect!";
+                }
+
+                // Move to the next word
+                currentWordIndex++;
+
+                if (isGameOver()) {
+                    endGame();
+                } else {
+                    // Clear input field
+                    document.getElementById("user-input").value = "";
+
+                    // Display new jumbled word
+                    displayWord();
+                }
+            });
+
+
+            var remainingTime = 10 * 60; // 20 minutes in seconds
+
+            function updateTimer() {
+                var minutes = Math.floor(remainingTime / 60);
+                var seconds = remainingTime % 60;
+
+                // Add leading zeros if necessary
+                var displayMinutes = minutes < 10 ? "0" + minutes : minutes;
+                var displaySeconds = seconds < 10 ? "0" + seconds : seconds;
+
+                document.getElementById("timer").innerHTML = "Time Remaining: " + displayMinutes + ":" + displaySeconds;
+            }
+
+            // Update the timer every second
+            var timerInterval = setInterval(function () {
+                remainingTime--;
+                updateTimer();
+
+                if (remainingTime <= 0) {
+                    clearInterval(timerInterval);
+                    endGame();
+                }
+            }, 1000);
+
+            document.getElementById("end-btn").addEventListener("click", function () {
+                clearInterval(timerInterval);
+                endGame();
+            });
+
+
+
+        });
+    </script>
+</body>
+
+</html>
